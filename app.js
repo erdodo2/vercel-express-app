@@ -8,7 +8,6 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.set('view engine', 'ejs');
 
-const firebaseApi = require('./firebaseApi');
 const cors = require('./middleware/cors');
 app.use(cors);
 
@@ -16,13 +15,7 @@ const path = require('path');
 var dir = path.join(__dirname, 'public');
 app.use(express.static(dir));
 
-app.get('/api/:collection/:doc', async (req, res) => {
-    res.json(await firebaseApi.getData(req.params.collection, req.params.doc));
-})
-
-app.get('/', async (req, res) => {
-
-    res.render('index',{data:await firebaseApi.getData("profile","tr")})
-});
+const router = require('./router');
+app.use('/', router);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
